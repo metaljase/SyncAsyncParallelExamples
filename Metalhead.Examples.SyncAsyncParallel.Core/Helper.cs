@@ -85,11 +85,11 @@ namespace Metalhead.Examples.SyncAsyncParallel.Core
             {                
                 try
                 {
-                    var response = client.GetAsync(url).Result;
+                    var response = client.GetAsync(url).GetAwaiter().GetResult();
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var content = response.Content.ReadAsStringAsync().Result;
+                        var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                         download.SizeBytes = Encoding.UTF8.GetBytes(content).Length;
                     }
                 }
@@ -128,7 +128,7 @@ namespace Metalhead.Examples.SyncAsyncParallel.Core
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var content = response.Content.ReadAsStringAsync().Result;
+                        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                         download.SizeBytes = Encoding.UTF8.GetBytes(content).Length;
                     }
                 }
