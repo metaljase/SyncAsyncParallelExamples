@@ -42,7 +42,7 @@ namespace Metalhead.Examples.SyncAsyncParallel.Core
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var download = await GetDownloadAsync(url);
+                var download = await GetDownloadAsync(url).ConfigureAwait(false);
                 downloads.Add(download);
 
                 report.Download = download;
@@ -55,7 +55,7 @@ namespace Metalhead.Examples.SyncAsyncParallel.Core
 
         public static async Task<ConcurrentBag<Download>> GetDownloadsParallelAsync(List<string> urls, IProgress<ProgressReport> progress, int maxDegreeOfParallelism, CancellationToken cancellationToken)
         {
-            ConcurrentBag<Download> downloads = [];            
+            ConcurrentBag<Download> downloads = [];
 
             var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism };
 
@@ -63,7 +63,7 @@ namespace Metalhead.Examples.SyncAsyncParallel.Core
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var download = await GetDownloadAsync(url);
+                var download = await GetDownloadAsync(url).ConfigureAwait(false);
                 downloads.Add(download);
 
                 // Create new instance of ProgressReport for each iteration to avoid overwriting issues caused by multithreading.
@@ -71,7 +71,7 @@ namespace Metalhead.Examples.SyncAsyncParallel.Core
                 report.Download = download;
                 report.PercentageComplete = downloads.Count * 100 / urls.Count;
                 progress.Report(report);
-            });
+            }).ConfigureAwait(false);
 
             return downloads;
         }
@@ -124,7 +124,7 @@ namespace Metalhead.Examples.SyncAsyncParallel.Core
             {                
                 try
                 {
-                    var response = await client.GetAsync(url);
+                    var response = await client.GetAsync(url).ConfigureAwait(false);
 
                     if (response.IsSuccessStatusCode)
                     {
